@@ -12,4 +12,9 @@ public class LogTool {
     {
         Log.w("Info",str);
     }
+
+    public static void prnit(String str)
+    {
+        System.out.println("yanruTODOdate="+System.nanoTime()+":"+str);
+    }
 }
