@@ -7,7 +7,7 @@ package com.example.dell.androidnote4;
 public class NoteItemInfo {
     public int docID;
     public String title;
-    public String description;
-    public String modifyTime;
+    public String content;
+    public String modify_time;
     public String tag;
 }

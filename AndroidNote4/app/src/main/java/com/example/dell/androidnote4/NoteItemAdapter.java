@@ -1,6 +1,7 @@
 package com.example.dell.androidnote4;
 
 import android.annotation.SuppressLint;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,9 +52,9 @@ public class NoteItemAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertview, ViewGroup viewGroup) {
         //获得ListView中的view
-        View noteItemView = mInflater.inflate(R.layout.item_simpleadapter, null);
+        final View noteItemView = mInflater.inflate(R.layout.item_simpleadapter, null);
         //获得学生对象
-        NoteItemInfo student = mData.get(position);
+        final NoteItemInfo noteInfo = mData.get(position);
         //获得自定义布局中每一个控件的对象。
         txtTitle = (TextView) noteItemView.findViewById(R.id.txtTitle);
         txtContent = (TextView) noteItemView.findViewById(R.id.txtContent);
@@ -62,23 +63,35 @@ public class NoteItemAdapter extends BaseAdapter {
         btnModify = (Button) noteItemView.findViewById(R.id.btnModify);
 
         //将数据一一添加到自定义的布局中。
-        txtTitle.setText(student.title);
-        txtContent.setText(student.description);
-        txtModifyTime.setText(student.modifyTime);
-        //  txtTitle.setImageResource(student.getImag());
+        txtTitle.setText(noteInfo.title);
+        txtContent.setText(noteInfo.content);
+        if(noteInfo.docID<0)
+        {
+            txtModifyTime.setText("");
+        }
+        else
+        {
+            txtModifyTime.setText(noteInfo.modify_time+"#"+noteInfo.tag);
+        }
         btnDelete.setVisibility(View.INVISIBLE);
         btnModify.setVisibility(View.INVISIBLE);
 
         btnDelete.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-               LogTool.prnit("点击删除按钮");
-               //TODO 点击删除按钮
+                LogTool.prnit("点击删除按钮");
+              Message message= Message.obtain();
+              message.obj="跳转到删除";
+              message.arg1 = noteInfo.docID;
+              GlobalData.handlerNoteList.sendMessage(message);
             }
         });
         btnModify.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 LogTool.prnit("点击修改按钮");
-                //TODO 点击修改按钮
+                Message message = Message.obtain();
+                message.obj = "跳转到修改";
+                message.arg1 = noteInfo.docID;
+                GlobalData.handlerNoteList.sendMessage(message);
             }
         });
         return noteItemView;

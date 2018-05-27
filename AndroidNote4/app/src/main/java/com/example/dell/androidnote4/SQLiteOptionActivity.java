@@ -10,8 +10,6 @@ import android.view.View;
 import android.widget.Button;
 
 public class SQLiteOptionActivity extends AppCompatActivity {
-
-  //  private Button instablish;
     private Button insert;
     private Button modify;
     private Button delete;

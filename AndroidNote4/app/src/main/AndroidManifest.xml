@@ -29,7 +29,9 @@
             android:name=".SQLiteOptionActivity"
             android:label="@string/title_activity_sqlite_option"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".NoteListActivity"></activity>
+        <activity android:name=".NoteListActivity" />
+        <activity android:name=".WriteNoteActivity" />
+        <activity android:name=".SettingActivity"></activity>
     </application>
 
 </manifest>

@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
@@ -47,7 +48,6 @@ public class MySQLiteOpenHelper extends SQLiteOpenHelper {
         LogTool.prnit("创建MySQLiteOpenHelper 数据库名="+name+",version="+version);
     }
 
-
     public MySQLiteOpenHelper(Context context,String name)
     {
         this(context, name, Version);
@@ -60,16 +60,25 @@ public class MySQLiteOpenHelper extends SQLiteOpenHelper {
         //创建了数据库并创建一个叫records的表
         //SQLite数据创建支持的数据类型： 整型数据，字符串类型，日期类型，二进制的数据类型
 
-        user u = new user();
         String sqlUser = "create table user(id INTEGER primary key AUTOINCREMENT";
         sqlUser+=",username varchar(200)";
         sqlUser+=",password varchar(200)";
-        sqlUser+=",email varchar(200)";
-        sqlUser+=",phonenumber varchar(200)";
         sqlUser+=",headid varchar(200)";
-        sqlUser+=",groupid varchar(200))";
-
+        sqlUser+=",email varchar(200) NULL";
+        sqlUser+=",phonenumber varchar(200) NULL";
+        sqlUser+=",groupid varchar(200) NULL";
+        sqlUser+=",taglist varchar(200) NULL)";
         CreateTable(db,sqlUser);
+
+        String sqlNote = "create table note(id INTEGER primary key AUTOINCREMENT";
+        sqlNote+=",title varchar(200)";
+        sqlNote+=",create_time varchar(200)";
+        sqlNote+=",modify_time varchar(200)";
+        sqlNote+=",userid varchar(200)";
+        sqlNote+=",content varchar(20000)";
+        sqlNote+=",tag varchar(200) NULL";
+        sqlNote+=",groupid varchar(200) NULL)";
+        CreateTable(db,sqlNote);
 
         //execSQL用于执行SQL语句
         //完成数据库的创建
@@ -79,7 +88,7 @@ public class MySQLiteOpenHelper extends SQLiteOpenHelper {
     ///初始化表结构
     private  void CreateTable(SQLiteDatabase db,String sql)
     {
-        LogTool.prnit("创建表结构sql="+sql);
+        LogTool.prnit("创建表结构sql=\n"+sql);
         db.execSQL(sql);
     }
 
@@ -114,15 +123,18 @@ public class MySQLiteOpenHelper extends SQLiteOpenHelper {
     {
         try{
             SQLiteDatabase sqlOption = getWritableDatabase();
-//            values1.put("name", "carson");
             sqlOption.insert(tableName, null, values);
             LogTool.prnit("成功插入表="+tableName+"，数据内容="+values);
             sqlOption.close();
             return "";
         }
+        catch ( SQLiteException e) {
+            LogTool.prnit("插入表="+tableName+"的数据="+values+"失败！SQLiteException失败原因="+e);
+            return "插入数据失败！";
+        }
         catch (Exception e)
         {
-           LogTool.prnit("插入表="+tableName+"的数据="+values+"失败！失败原因="+e);
+           LogTool.prnit("插入表="+tableName+"的数据="+values+"失败！Exception失败原因="+e);
            return "插入数据失败！";
         }
     }
@@ -131,18 +143,26 @@ public class MySQLiteOpenHelper extends SQLiteOpenHelper {
     public SelectResInfo SelectTable(String tableName,String sqlWhere)
     {
         SQLiteDatabase dbOption = MySQLiteOpenHelper.getInstance().getReadableDatabase();
-        String sql = "select * from "+tableName +" "+sqlWhere;
+        String sql = "select * from "+tableName +" where "+sqlWhere;
         LogTool.prnit("执行查询sql="+sql);
         Cursor cursor = dbOption.rawQuery(sql,null);
         SelectResInfo info = new SelectResInfo();
         int readIndex=0;
         while (cursor.moveToNext()) {
+            SelectResItem item = new SelectResItem();
+            String str= "\n i=";
             for (int index = 0; index < cursor.getColumnCount(); index++) {
                 String columnName = cursor.getColumnName(index);
                 String columValue = cursor.getString(index);
-                LogTool.prnit("查询表=" + tableName + "元素["+readIndex+"]结果列名=" + columnName + ",值=" + columValue);
-                info.dic.put(columnName,columValue);
+                str+= ",column="+columnName+",val="+columValue;
+          //      LogTool.prnit("查询column="+columnName);
+            //    if(item.dic.get(columnName).isEmpty())
+              //  {
+                    item.dic.put(columnName, columValue);
+              //  }
             }
+            LogTool.prnit("查询表="+tableName+"结果="+str);
+            info.list.add(item);
             readIndex++;
         }
         //关闭数据库
@@ -150,4 +170,23 @@ public class MySQLiteOpenHelper extends SQLiteOpenHelper {
         return info;
     }
 
+    //删除某条记录
+    public void DeleteTable(String tableName,String whereField,String [] values)
+    {
+        LogTool.prnit("删除表信息tableName="+tableName+",whereField="+whereField);
+        SQLiteDatabase dbOption =getWritableDatabase();
+        //删除数据
+       // dbOption.delete(tableName,sqlWhere,null);
+        dbOption.delete(tableName, whereField+"=?", values);
+        //关闭数据库
+        dbOption.close();
+    }
+
+    //修改表信息
+    public void UpdateTable(String tableName,String sqlWhere, ContentValues values)
+    {
+        SQLiteDatabase sqlOption = getWritableDatabase();
+        sqlOption.update(tableName, values, sqlWhere, null);
+        sqlOption.close();
+    }
 }

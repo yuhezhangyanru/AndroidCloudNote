@@ -10,6 +10,4 @@ public class group_table
         public String group_name;
 		/*该分组所有分享的文章ID*/
         public String note_ids;
-		
-
 }

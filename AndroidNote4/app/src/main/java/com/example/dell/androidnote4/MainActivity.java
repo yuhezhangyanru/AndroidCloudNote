@@ -10,6 +10,8 @@ import android.widget.EditText;
 import android.content.Intent;
 import android.widget.TextView;
 
+import java.util.Dictionary;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,23 +42,26 @@ public class MainActivity extends AppCompatActivity {
                 if (editName.getText().length() == 0 || editPassword.getText().length() == 0) {
                     DialogTool.ShowTip(MainActivity.this, "用户名或密码不能为空！");
                 } else {
-                    SelectResInfo info = MySQLiteOpenHelper.getInstance().SelectTable("user", "where username='" +
+                    SelectResInfo info = MySQLiteOpenHelper.getInstance().SelectTable("user", "username='" +
                             editName.getText().toString() + "'");
-                    if(info.dic.get("password")!=null)
+                    LogTool.prnit("查询结果满足条件的列表="+info.list.size());
+                    Dictionary<String,String> dic = info.list.size()==0? null: info.list.get(0).dic;
+                    if(dic!=null && dic.get("password")!=null)
                     {
-                        LogTool.prnit("查询的password=" + info.dic.get("password").toString()
+                        LogTool.prnit("查询的password=" + dic.get("password").toString()
                                 + "#,输入的密码="+editPassword.getText().toString()
-                        +",值相同？"+(info.dic.get("password").toString().equals( editPassword.getText().toString())));
+                        +",值相同？"+(dic.get("password").toString().equals( editPassword.getText().toString())));
                     }
 
-                    if (info.dic.size() == 0) {
+                    if (info.list.size() == 0) {
                         DialogTool.ShowTip(MainActivity.this, "用户名不存在！！");
-                    } else if (!info.dic.get("password").toString().equals( editPassword.getText().toString())) {
+                    } else if (!dic.get("password").toString().equals( editPassword.getText().toString())) {
                         DialogTool.ShowTip(MainActivity.this, "输入密码错误！！！");
                     }
                     else //用户验证通过，将进入主页面
                     {
-                        GlobalData.curUser.dic = info.dic;
+                        LogTool.prnit("查询结果满足条件的列表dic="+dic);
+                        GlobalData.curUser.dic = dic;
                         Intent intent = new Intent(MainActivity.this, NoteListActivity.class);   //Intent intent=new Intent(MainActivity.this,JumpToActivity.class);
                         startActivity(intent);
                     }
@@ -70,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //跳转到注册页面
+                GlobalData.curUser = null;//清空信息，开始注册
                 boolean useTest = false;//TODO 测试跳转
                 if (useTest) {
                     Intent intent = new Intent(MainActivity.this, SQLiteOptionActivity.class);   //Intent intent=new Intent(MainActivity.this,JumpToActivity.class);
