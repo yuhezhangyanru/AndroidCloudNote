@@ -4,12 +4,20 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.content.Intent;
 import android.widget.TextView;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.sql.ClientInfoStatus;
 import java.util.Dictionary;
 
 
@@ -29,6 +37,15 @@ public class MainActivity extends AppCompatActivity {
         LogTool.prnit("启动应用后初始化数据库=" + ConstData.DBName);
         MySQLiteOpenHelper.CreateInstance(getApplicationContext(), ConstData.DBName, 2);
         MySQLiteOpenHelper.getInstance().getWritableDatabase();
+
+        //测试发送消息
+        try {
+            Client.instance().SendMessage("你好服务器！"+GlobalData.GetDateStr());
+        } catch (IOException e) {
+            e.printStackTrace();
+            LogTool.prnit("发送测试消息失败！！！");
+        }
+
 
         //以下绑定自己的组件：
         editName = (EditText) findViewById(R.id.editName);

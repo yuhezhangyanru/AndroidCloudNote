@@ -16,10 +16,14 @@ using System;
 using System.IO;
 public class LogTool
 {
+    public static bool writeLog = false;
     public static string debugPath = ""; //输出报错文件
 
     public static void WriteLog(string logStr)
     {
+        if (!writeLog)
+            return;
+
         try
         {
             string oldContent = "";

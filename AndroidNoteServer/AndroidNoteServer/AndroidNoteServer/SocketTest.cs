@@ -64,12 +64,17 @@ public class SocketTest
 
             string receiveData = Receive(acceptSocket, 5000); //5 seconds timeout.
 
-            Console.WriteLine("time=" + DateTime.Now.ToShortTimeString() + ",Receive：" + receiveData);
+            Console.WriteLine("time=" + DateTime.Now.ToShortTimeString() + ",Receive：" + receiveData+"#");
             //ParseDatafromBytes(byteArray);
             // ParseDataAsStr(receiveData);
             //服务器转发出去
-            string resend = "server#" + receiveData;
-            acceptSocket.Send(encode.GetBytes(resend));//encode.GetBytes("ok"));
+            if (receiveData != "") //假如不是空数据，就转发
+            {
+                string resend = "server#" + receiveData;
+                Console.WriteLine("服务器发送:" + resend);
+                LogTool.WriteLog(resend);
+                acceptSocket.Send(encode.GetBytes(resend));//encode.GetBytes("ok"));
+            }
             DestroySocket(acceptSocket); //import
         }
     }
@@ -101,6 +106,10 @@ public class SocketTest
             Console.WriteLine("发送不了数据e=" + e);
         }
         return result;
+    }
+
+    public static void OnlyWaitServerData()
+    { 
     }
 
     /// <summary>
