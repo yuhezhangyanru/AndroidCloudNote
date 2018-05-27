@@ -1,0 +1,6 @@
+D:\MyProjects\AndroidCloudNote\AndroidNoteServer\AndroidNoteServer\AndroidNoteServer\bin\Debug\AndroidNoteServer.exe.config
+D:\MyProjects\AndroidCloudNote\AndroidNoteServer\AndroidNoteServer\AndroidNoteServer\bin\Debug\AndroidNoteServer.exe
+D:\MyProjects\AndroidCloudNote\AndroidNoteServer\AndroidNoteServer\AndroidNoteServer\bin\Debug\AndroidNoteServer.pdb
+D:\MyProjects\AndroidCloudNote\AndroidNoteServer\AndroidNoteServer\AndroidNoteServer\obj\Debug\AndroidNoteServer.exe
+D:\MyProjects\AndroidCloudNote\AndroidNoteServer\AndroidNoteServer\AndroidNoteServer\obj\Debug\AndroidNoteServer.pdb
+D:\MyProjects\AndroidCloudNote\AndroidNoteServer\AndroidNoteServer\AndroidNoteServer\obj\Debug\AndroidNoteServer.csprojResolveAssemblyReference.cache
