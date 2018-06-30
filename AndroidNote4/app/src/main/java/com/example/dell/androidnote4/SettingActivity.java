@@ -1,19 +1,34 @@
 package com.example.dell.androidnote4;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.gesture.GestureLibraries;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextClock;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
-public class SettingActivity extends AppCompatActivity {
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class SettingActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     private TextView txtUserName;
     private TextView txtUserId;
     private TextView txtGroupID;
@@ -22,6 +37,10 @@ public class SettingActivity extends AppCompatActivity {
     private TextView txtGroupName;
     private ImageView imageHeadIcon;
     private Button btnModifyInfo;
+    private Button btnQuitGroup;
+    private ListView listViewNearGroup;
+    // 模拟数据
+    private List<String> dataList = null;
 
     @SuppressLint("ResourceType")
     @Override
@@ -36,7 +55,8 @@ public class SettingActivity extends AppCompatActivity {
         txtPhoneNumber = (TextView) findViewById(R.id.txtPhoneNumber);
         txtGroupName = (TextView) findViewById(R.id.txtGroupName);
         imageHeadIcon = (ImageView) findViewById(R.id.imageMyHead);
-        btnModifyInfo = (Button) findViewById(R.id.btnModifyInfo);
+         btnModifyInfo = (Button) findViewById(R.id.btnModifyInfo);
+      //  btnQuitGroup = (Button) findViewById(R.id.btnLeaveGroup);
 
         SelectResItem userInfo = GlobalData.curUser;
         txtUserName.setText("用户名：" + userInfo.dic.get("username").toString());
@@ -99,6 +119,68 @@ public class SettingActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        return;//yanruTODO屏蔽群组相关的
+        //推出群组
+     //   btnQuitGroup.setOnClickListener(new View.OnClickListener() {
+          //  public void onClick(View v) {
+           //     if(GlobalData.curUser.dic.get("groupid").isEmpty()) {
+             //   DialogTool.ShowTip(SettingActivity.this,"你还没有群组！");
+             //   }
+              //  else {
+               //     ContentValues values= new ContentValues();
+               //     values.put("groupid","");
+               //     MySQLiteOpenHelper.getInstance().UpdateTable("user","id="+GlobalData.curUser.dic.get("id").toString(),values);
+              //  }
+           // }
+      //  });
+
+        //请求分享分组
+
+        //绑定处理分组按钮
+       // dataList = new ArrayList<String>();
+        // 初始化数据
+     //   for (int i = 0; i < 20; i++) {
+      //      dataList.add("第" + i + "条数据");//yanruTODO测试数据
+     //   }
+        // 设置adapter(所在的activity,使用的显示样式,数据源)
+     //   ListAdapter adapter = new ArrayAdapter<String>(SettingActivity.this,
+      //          android.R.layout.simple_list_item_1, dataList);
+     //   listViewNearGroup = (ListView) findViewById(R.id.listCurrentGroups);
+      //  listViewNearGroup.setAdapter(adapter);
+        // 绑定item点击事件
+     //   listViewNearGroup.setOnItemClickListener((AdapterView.OnItemClickListener) this);
+
+        //TODO 向服务器请求当前的群组列表
+      //  try {
+      //      Client.instance().RequestGetGroups(GlobalData.curUser.dic.get("username").toString());
+     //   } catch (IOException e) {
+      //      e.printStackTrace();
+     //   }
+
+      //  GlobalData.handerGroupEventListSetting= new Handler() {
+         //   public void handleMessage(Message msg) {
+         //       String message = (String) msg.obj;//obj不一定是String类，可以是别的类，看用户具体的应用
+        //        //根据message中的信息对主线程的UI进行改动
+        //        LogTool.prnit("笔记列表页面，接收消息message=" + message);
+         //       String []values = message.split("#");
+         //       for(int index=0;index<values.length;index++)
+         //       {
+         //           LogTool.prnit("收到服务器log index"+index+",value="+values[index]);
+        //        }
+      //      }
+      //  };
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position,
+                            long id) {
+
+       LogTool.prnit(this,"点击了position="+position);
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
 }

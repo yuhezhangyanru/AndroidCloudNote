@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.dell.androidnote4.RegisterActivity">
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/de_frm_backgroud"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -18,7 +18,7 @@
             android:layout_marginRight="-300dp"
             android:scaleType="centerCrop"
             android:src="@drawable/note_background" />
-    </FrameLayout>
+    </LinearLayout>
 
 
     <LinearLayout
@@ -65,8 +65,8 @@
                 android:textSize="16dp" />
 
             <View
-                android:layout_width="wrap_content"
-                android:layout_height="57dp"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
                 android:layout_weight="100" />
             <TextView
                 android:id="@+id/txtErrorLog"
@@ -93,7 +93,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="438dp"
             android:layout_weight="60"
             android:orientation="horizontal">
 
@@ -232,7 +232,7 @@
                         android:layout_gravity="bottom"
                         android:layout_weight="100"
                         android:gravity="center"
-                        android:hint="请输入群组编号(空或0表示不加入任何群组)"
+                        android:hint="请输入群组昵称(没群组则会新建，空表示退出群组)"
                         android:lines="1"
                         android:maxLength="100"
                         android:maxLines="1"
@@ -251,7 +251,8 @@
             <View
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-            android:layout_weight="100" />
+                android:layout_weight="100" />
+
         </LinearLayout>
 
         <!--选择头像的区域-->
@@ -362,6 +363,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="130"
+            android:gravity="bottom"
             android:orientation="horizontal"
             android:visibility="visible">
 
@@ -372,8 +374,9 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="140dp"
+                android:layout_height="100dp"
                 android:layout_weight="30"
+                android:gravity="bottom|end"
                 android:orientation="horizontal">
 
                 <Button
@@ -415,15 +418,9 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="450dp"
+            android:layout_height="400dp"
             android:layout_weight="80">
 
-            <TextView
-                android:id="@+id/testDeleteLog1"
-                android:layout_width="100dp"
-                android:layout_height="2dp"
-                android:layout_weight="1"
-                android:text="" />
         </LinearLayout>
 
     </LinearLayout>

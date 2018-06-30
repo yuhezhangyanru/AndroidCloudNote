@@ -27,25 +27,23 @@ public class MainActivity extends AppCompatActivity {
     private EditText editName;
     private EditText editPassword;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         //2018-5-26 初始化SQLite数据库，并指定数据库可读写
-        LogTool.prnit("启动应用后初始化数据库=" + ConstData.DBName);
+        LogTool.prnit(this,"启动应用后初始化数据库=" + ConstData.DBName);
         MySQLiteOpenHelper.CreateInstance(getApplicationContext(), ConstData.DBName, 2);
         MySQLiteOpenHelper.getInstance().getWritableDatabase();
 
         //测试发送消息
         try {
-            Client.instance().SendMessage("你好服务器！"+GlobalData.GetDateStr());
+            Client.instance().TestNUll();//.SendMessage("你好服务器！"+GlobalData.GetDateStr());
         } catch (IOException e) {
             e.printStackTrace();
-            LogTool.prnit("发送测试消息失败！！！");
+            LogTool.prnit(this,"监听消息失败！！！！");
         }
-
 
         //以下绑定自己的组件：
         editName = (EditText) findViewById(R.id.editName);
@@ -61,11 +59,11 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     SelectResInfo info = MySQLiteOpenHelper.getInstance().SelectTable("user", "username='" +
                             editName.getText().toString() + "'");
-                    LogTool.prnit("查询结果满足条件的列表="+info.list.size());
+                    LogTool.prnit(this,"查询结果满足条件的列表="+info.list.size());
                     Dictionary<String,String> dic = info.list.size()==0? null: info.list.get(0).dic;
                     if(dic!=null && dic.get("password")!=null)
                     {
-                        LogTool.prnit("查询的password=" + dic.get("password").toString()
+                        LogTool.prnit(this,"查询的password=" + dic.get("password").toString()
                                 + "#,输入的密码="+editPassword.getText().toString()
                         +",值相同？"+(dic.get("password").toString().equals( editPassword.getText().toString())));
                     }
@@ -77,7 +75,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                     else //用户验证通过，将进入主页面
                     {
-                        LogTool.prnit("查询结果满足条件的列表dic="+dic);
+                        LogTool.prnit(this,"查询结果满足条件的列表dic=" + dic);
+                        GlobalData.curUser = new SelectResItem();
                         GlobalData.curUser.dic = dic;
                         Intent intent = new Intent(MainActivity.this, NoteListActivity.class);   //Intent intent=new Intent(MainActivity.this,JumpToActivity.class);
                         startActivity(intent);

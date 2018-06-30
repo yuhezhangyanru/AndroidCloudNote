@@ -1,17 +1,21 @@
 package com.example.dell.androidnote4;
 
+import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.gsm.GsmCellLocation;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -42,6 +46,9 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        //向服务请求当前的群组信息
+
 
         txtTopTip = (TextView) findViewById(R.id.txtTopTip);
         editName = (EditText) findViewById(R.id.editName);
@@ -97,7 +104,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         btnConfirmRegister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                LogTool.prnit("点击了确认注册");
+                LogTool.prnit(this,"点击了确认注册");
                 int nameLength = editName.getText().length();
                 int passwordLength = editPassword.getText().length();
                 String errorTip = null;
@@ -117,6 +124,7 @@ public class RegisterActivity extends AppCompatActivity {
                 } else {
                     txtErrorLog.setText("");
 
+                    //请求检查群组信息
                     if (isRegiser) //检查注册信息
                     {
                         GetDataCount(editName.getText().toString(), txtErrorLog);
@@ -196,7 +204,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void handleMessage(Message msg) {
                 String message = (String) msg.obj;//obj不一定是String类，可以是别的类，看用户具体的应用
                 //根据message中的信息对主线程的UI进行改动
-                LogTool.prnit("接收消息message=" + message);
+                LogTool.prnit(this,"接收消息message=" + message);
                 DialogTool.ShowTip(RegisterActivity.this, message);
             }
         };
@@ -210,7 +218,15 @@ public class RegisterActivity extends AppCompatActivity {
         item.put("phonenumber", editPhone.getText().toString());
         item.put("headid", chooseHeadId);
         item.put("groupid", editGroupID.getText().toString());
-        LogTool.prnit("旧的用户名=" + GlobalData.curUser.dic.get("username") + ",新的用户名=" + username);
+
+        LogTool.prnit(this,"即将验证修改用户是否输入了符号");
+        String res  = GlobalData.checkStringOK(item.toString());
+        if(res!="")
+        {
+            DialogTool.ShowTip(RegisterActivity.this,res);
+            return;
+        }
+        LogTool.prnit(this,"旧的用户名=" + GlobalData.curUser.dic.get("username") + ",新的用户名=" + username);
         int resCode = 0;
         if (!username.equals(GlobalData.curUser.dic.get("username"))) {
             resCode = getCurUserCount(username);
@@ -223,7 +239,6 @@ public class RegisterActivity extends AppCompatActivity {
           //  LogTool.prnit("注册完查询用户个数="+ newInfo.list.size());
             GlobalData.curUser = newInfo.list.get(0);
 
-
             //用户注册成功！跳转到笔记的主面板
             Intent intent = new Intent(RegisterActivity.this, NoteListActivity.class);   //Intent intent=new Intent(MainActivity.this,JumpToActivity.class);
             startActivity(intent);
@@ -233,7 +248,7 @@ public class RegisterActivity extends AppCompatActivity {
     private int getCurUserCount(final String username)
     {
         int count = MySQLiteOpenHelper.getInstance().GetItemCount("user", "username", username);
-        LogTool.prnit("查询用户名="+username+",count=" + count);
+        LogTool.prnit(this,"查询用户名="+username+",count=" + count);
         if (count > 0) {
             //先验证该用户名是否存在
             Message message = Message.obtain();
@@ -247,43 +262,45 @@ public class RegisterActivity extends AppCompatActivity {
     public int GetDataCount(final String username, final TextView errorLog) {
         int resultCode = 0;
         int count = 0;
-     //   try {
-            count = getCurUserCount(username);
-            if (count == 0) {
-                ContentValues item = new ContentValues();
-                item.put("username", username);
-                item.put("password", editPassword.getText().toString());
-                item.put("email", editEmail.getText().toString());
-                item.put("phonenumber", editPhone.getText().toString());
-                item.put("headid", chooseHeadId);
-                item.put("groupid", editGroupID.getText().toString());
-                item.put("taglist","");
 
-                String errorCode = MySQLiteOpenHelper.getInstance().InsertTable("user", item);
-                if (errorCode != "") {
-                    LogTool.prnit("查询失败!错误原因");
-                    Message message = Message.obtain();
-                    message.obj = "注册用户信息：" + errorCode;
-                    handler.sendMessage(message);
-                } else {
+        count = getCurUserCount(username);
+        if (count == 0) {
+            ContentValues item = new ContentValues();
+            item.put("username", username);
+            item.put("password", editPassword.getText().toString());
+            item.put("email", editEmail.getText().toString());
+            item.put("phonenumber", editPhone.getText().toString());
+            item.put("headid", chooseHeadId);
+            item.put("groupid", editGroupID.getText().toString());
+            item.put("taglist", "");
 
-                    //查询当前用户信息并更新当前用户信息，主要为了更新到用户id
-                    SelectResInfo newInfo = MySQLiteOpenHelper.getInstance().SelectTable("user", "username='" + username + "'");
-                    LogTool.prnit("注册完查询用户个数="+ newInfo.list.size());
-                    GlobalData.curUser = newInfo.list.get(0);
-                    LogTool.prnit("注册完查询用户信息dic=" + GlobalData.curUser.dic);
-
-                    //用户注册成功！跳转到笔记的主面板
-                    Intent intent = new Intent(RegisterActivity.this, NoteListActivity.class);   //Intent intent=new Intent(MainActivity.this,JumpToActivity.class);
-                    startActivity(intent);
-                }
+            LogTool.prnit(this,"即将验证是否输入了符号item.toString()="+item.toString()+"#");
+            String res = GlobalData.checkStringOK(item.toString());
+            if(res!="") {
+                DialogTool.ShowTip(RegisterActivity.this, res);
+                return 1;
             }
-      //  } catch (Exception e) {
-       //     LogTool.prnit("查询失败!错误原因=" + e.getMessage());
-      //      Message message = Message.obtain();
-        //    message.obj = "注册验证失败！服务器连接异常！";
-        //    handler.sendMessage(message);
-     //   }
+            LogTool.prnit(this,"注册输入的信息="+item.toString());
+
+            String errorCode = MySQLiteOpenHelper.getInstance().InsertTable("user", item);
+            if (errorCode != "") {
+                LogTool.prnit(this,"查询失败!错误原因");
+                Message message = Message.obtain();
+                message.obj = "注册用户信息：" + errorCode;
+                handler.sendMessage(message);
+            } else {
+
+                //查询当前用户信息并更新当前用户信息，主要为了更新到用户id
+                SelectResInfo newInfo = MySQLiteOpenHelper.getInstance().SelectTable("user", "username='" + username + "'");
+                LogTool.prnit(this,"注册完查询用户个数=" + newInfo.list.size());
+                GlobalData.curUser = newInfo.list.get(0);
+                LogTool.prnit(this,"注册完查询用户信息dic=" + GlobalData.curUser.dic);
+
+                //用户注册成功！跳转到笔记的主面板
+                Intent intent = new Intent(RegisterActivity.this, NoteListActivity.class);   //Intent intent=new Intent(MainActivity.this,JumpToActivity.class);
+                startActivity(intent);
+            }
+        }
         return 0;
     }
 }

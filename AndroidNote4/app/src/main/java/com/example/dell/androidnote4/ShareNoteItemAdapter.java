@@ -1,21 +1,20 @@
 package com.example.dell.androidnote4;
+        import android.annotation.SuppressLint;
+        import android.os.Message;
+        import android.view.LayoutInflater;
+        import android.view.View;
+        import android.view.ViewGroup;
+        import android.widget.BaseAdapter;
+        import android.widget.Button;
+        import android.widget.TextView;
 
-import android.annotation.SuppressLint;
-import android.os.Message;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.TextView;
-
-import java.util.List;
+        import java.util.List;
 
 /**
  * Created by DELL on 2018/5/26.
  */
 
-public class NoteItemAdapter extends BaseAdapter {
+public class ShareNoteItemAdapter extends BaseAdapter {
 
     private List<NoteItemInfo> mData;//定义数据。
     private LayoutInflater mInflater;//定义Inflater,加载我们自定义的布局。
@@ -29,7 +28,7 @@ public class NoteItemAdapter extends BaseAdapter {
     /*
     定义构造器，在Activity创建对象Adapter的时候将数据data和Inflater传入自定义的Adapter中进行处理。
     */
-    public NoteItemAdapter(LayoutInflater inflater, List<NoteItemInfo> data) {
+    public ShareNoteItemAdapter(LayoutInflater inflater, List<NoteItemInfo> data) {
         mInflater = inflater;
         mData = data;
     }

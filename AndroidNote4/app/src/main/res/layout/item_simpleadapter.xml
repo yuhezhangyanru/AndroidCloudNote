@@ -1,10 +1,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="300dp"
+    android:layout_width="320dp"
     android:layout_height="match_parent"
-    android:paddingLeft="10dp"
     android:layout_margin="40dp"
-    android:gravity="center|left">
+    android:gravity="center|left"
+    android:orientation="vertical"
+    android:paddingLeft="10dp">
+
     <LinearLayout
         android:id="@+id/ll_0"
         android:layout_width="match_parent"
@@ -17,9 +18,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="任务标题"
-            android:textStyle="bold"
             android:textColor="#0e1100"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/txtContent"
             android:layout_width="340dp"
@@ -27,22 +29,43 @@
             android:text="任务内容"
             android:textColor="#002200"
             android:textSize="15sp" />
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="10dp"
-            android:orientation="vertical"
+            android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:layout_marginLeft="15dp">
+            android:orientation="vertical">
+
         </LinearLayout>
-        <TextView
-            android:id="@+id/txtModifyTime"
-            android:layout_width="340dp"
-            android:layout_height="wrap_content"
-            android:text="修改时间和标签"
-            android:textAlignment="viewEnd"
-            android:textStyle="bold"
-            android:textSize="13sp"
-            android:gravity="end" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txtfromUser"
+                android:layout_width="340dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="分享自用户。。张三"
+                android:textAlignment="viewStart"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtModifyTime2"
+                android:layout_width="340dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="修改时间和标签"
+                android:textAlignment="viewEnd"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="290dp"

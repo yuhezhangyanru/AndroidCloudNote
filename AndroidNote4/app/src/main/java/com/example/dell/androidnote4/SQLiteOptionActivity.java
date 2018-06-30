@@ -48,7 +48,7 @@ public class SQLiteOptionActivity extends AppCompatActivity {
         //点击插入数据到数据库
         insert.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                LogTool.prnit("插入数据");
+                LogTool.prnit(this,"插入数据");
                 // 创建SQLiteOpenHelper子类对象
                 // 调用getWritableDatabase()方法创建或打开一个可以读的数据库
                 SQLiteDatabase sqlOption = MySQLiteOpenHelper.getInstance().getWritableDatabase();
@@ -66,7 +66,7 @@ public class SQLiteOptionActivity extends AppCompatActivity {
         //点击修改数据
         modify.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                LogTool.prnit("修改数据");
+                LogTool.prnit(this,"修改数据");
 
                 // 创建一个DatabaseHelper对象
                 // 将数据库的版本升级为2
@@ -91,7 +91,7 @@ public class SQLiteOptionActivity extends AppCompatActivity {
         //点击删除数据
         delete.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                LogTool.prnit("删除数据");
+                LogTool.prnit(this,"删除数据");
                 // 创建DatabaseHelper对象
                 MySQLiteOpenHelper dbHelper3 = new MySQLiteOpenHelper(SQLiteOptionActivity.this, ConstData.DBName, 2);
 
@@ -107,7 +107,7 @@ public class SQLiteOptionActivity extends AppCompatActivity {
         //点击查询数据库
         query.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                LogTool.prnit("查询数据");
+                LogTool.prnit(this,"查询数据");
                 // 调用getWritableDatabase()方法创建或打开一个可以读的数据库
                 SQLiteDatabase sqliteDatabase4 = MySQLiteOpenHelper.getInstance().getReadableDatabase();
                 // 调用SQLiteDatabase对象的query方法进行查询
@@ -133,7 +133,7 @@ public class SQLiteOptionActivity extends AppCompatActivity {
         //点击删除数据库
         delete_database.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                LogTool.prnit("删除数据库");
+                LogTool.prnit(this,"删除数据库");
                 // 调用getReadableDatabase()方法创建或打开一个可以读的数据库
                 SQLiteDatabase sqliteDatabase5 = MySQLiteOpenHelper.getInstance().getReadableDatabase();
                 //删除名为test.db数据库

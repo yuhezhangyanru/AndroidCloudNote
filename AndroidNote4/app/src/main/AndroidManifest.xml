@@ -5,7 +5,6 @@
     <!-- 2018-5-22添加数据库权限 -->
     <uses-permission android:name="android.permission.INTERNET" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -32,7 +31,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".NoteListActivity" />
         <activity android:name=".WriteNoteActivity" />
-        <activity android:name=".SettingActivity"></activity>
+        <activity android:name=".SettingActivity" />
+        <activity android:name=".ShareNoteActivity"></activity>
     </application>
 
 </manifest>

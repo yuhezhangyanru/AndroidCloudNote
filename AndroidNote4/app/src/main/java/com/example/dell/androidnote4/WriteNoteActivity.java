@@ -12,11 +12,14 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.io.IOException;
+import java.nio.channels.ClosedByInterruptException;
 import java.util.Date;
 import java.util.logging.Logger;
 
 public class WriteNoteActivity extends AppCompatActivity {
     private TextView txtCreateType;
+    private TextView txtTimeInfo;
     private Button btnCreateConfirm;
     private EditText editTitle;
     private EditText editTag;
@@ -36,9 +39,11 @@ public class WriteNoteActivity extends AppCompatActivity {
         editTag = (EditText)findViewById(R.id.editTag);
         editContent = (EditText)findViewById(R.id.editContent);
         txtCreateType = (TextView) findViewById(R.id.txtCreateType);
+        txtTimeInfo = (TextView)findViewById(R.id.txtTimeInfo);
 
         final boolean isCreate = GlobalData.curNote ==null;
 
+        if(txtCreateType!=null)
         txtCreateType.setText(isCreate?"新建笔记":"修改笔记");
         if(!isCreate)
         {
@@ -46,12 +51,17 @@ public class WriteNoteActivity extends AppCompatActivity {
             editContent.setText(GlobalData.curNote.dic.get("content").toString());
             editTag.setText(GlobalData.curNote.dic.get("tag").toString());
             groupid = GlobalData.curNote.dic.get("groupid").toString();
+            txtTimeInfo.setText(("编辑时间：")+GlobalData.GetDateStr()+",创建时间："+GlobalData.curNote.dic.get("create_time").toString());
+        }
+        else
+        {
+            txtTimeInfo.setText(("编辑时间：")+GlobalData.GetDateStr());
         }
         checkBoxShare.setChecked(!groupid.isEmpty());
 
         btnCreateConfirm.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                LogTool.prnit("点击了 btnCreateConfirm！当前模式是创建笔记？"+isCreate+",是否选分享？"+checkBoxShare.isChecked());
+                LogTool.prnit(this,"点击了 btnCreateConfirm！当前模式是创建笔记？"+isCreate+",是否选分享？"+checkBoxShare.isChecked());
                 if(editTitle.getText().toString().isEmpty())
                 {
                     DialogTool.ShowTip(WriteNoteActivity.this,"标题不可以为空！");
@@ -62,23 +72,16 @@ public class WriteNoteActivity extends AppCompatActivity {
                 }
                 else
                 {
-                    if(checkBoxShare.isChecked()==true)
-                    {
-                        if(GlobalData.curUser.dic.get("groupid").isEmpty()) {
-                            DialogTool.ShowTip(WriteNoteActivity.this,"你还没有群组！请先取消勾选分享！或去'与我分享'加入一个群组！");
-                            return;
-                        }
-                    }
-
+                    ContentValues values = new ContentValues();
                     //插入或者更新数据库
                     if(isCreate)
                     {
-                        ContentValues values = new ContentValues();
-                        values.put("title",editTitle.getText().toString());
                         values.put("content",editContent.getText().toString());
+                        values.put("title",editTitle.getText().toString());
                         values.put("tag",editTag.getText().toString());
                         values.put("create_time",GlobalData.GetDateStr());
                         values.put("modify_time",GlobalData.GetDateStr());
+                        values.put("username",GlobalData.curUser.dic.get("username").toString());
                         values.put("groupid",groupid);
                         values.put("userid",GlobalData.curUser.dic.get("id").toString());
                         MySQLiteOpenHelper.getInstance().InsertTable("note",values);
@@ -86,8 +89,6 @@ public class WriteNoteActivity extends AppCompatActivity {
                     else
                     {
                         int curNoteId= Integer.parseInt(GlobalData.curNote.dic.get("id").toString());
-                        //TODO 修改笔记内容
-                        ContentValues values = new ContentValues();
                         values.put("title",editTitle.getText().toString());
                         values.put("content",editContent.getText().toString());
                         values.put("tag",editTag.getText().toString());
@@ -95,6 +96,7 @@ public class WriteNoteActivity extends AppCompatActivity {
                         values.put("modify_time",GlobalData.GetDateStr());
                         values.put("groupid",groupid);
                         values.put("userid",GlobalData.curUser.dic.get("id").toString());
+                        values.put("username",GlobalData.curUser.dic.get("username").toString());
                         values.put("id",curNoteId);
 
                         MySQLiteOpenHelper.getInstance().UpdateTable("note","id="+curNoteId,values);
@@ -105,7 +107,7 @@ public class WriteNoteActivity extends AppCompatActivity {
                     if(!tag.isEmpty())
                     {
                         String oldTag = GlobalData.curUser.dic.get("taglist")==null?"": GlobalData.curUser.dic.get("taglist").toString();
-                        LogTool.prnit("旧的标签="+oldTag);
+                        LogTool.prnit(this,"旧的标签="+oldTag);
                         if(oldTag.contains(tag))
                         {
                             oldTag+=tag+"#";
@@ -119,6 +121,13 @@ public class WriteNoteActivity extends AppCompatActivity {
                     //插入笔记或成功！跳转到笔记的主面板
                     Intent intent = new Intent(WriteNoteActivity.this, NoteListActivity.class);   //Intent intent=new Intent(MainActivity.this,JumpToActivity.class);
                     startActivity(intent);
+
+                    if(checkBoxShare.isChecked()==true)
+                        try {
+                            Client.instance().SendMessage(ConstData.ACTION_SHARE + ConstData.SUB_SIGN + values.toString());
+                        } catch (IOException e) {
+                            LogTool.prnit(this, "请求分享文章失败 e=" + e);
+                        }
                 }
             }
         });

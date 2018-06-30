@@ -10,10 +10,13 @@ import android.os.Message;
 public class ConstData {
 
     //数据库名称
-    public static final String DBName = "android_note_22";
+    public static final String DBName = "android_note_40";
 
     //用户表
     public   static final String TableUser = "user_info";
 
+    //客户端的指令动作 每个动作用#分割
+    public static  final String ACTION_SHARE = "ACTION_SHARE";
 
+    public static final String SUB_SIGN = "#";
 }

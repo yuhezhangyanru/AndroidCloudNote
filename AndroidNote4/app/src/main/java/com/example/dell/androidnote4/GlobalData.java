@@ -26,6 +26,9 @@ public class GlobalData {
     //笔记列表页面的事件注册
     public static Handler handlerNoteList;
 
+    //处理群组分享的事件
+    public static Handler handerGroupEventListSetting;
+
     ///获得当前系统时间
     public static String GetDateStr()
     {
@@ -34,5 +37,15 @@ public class GlobalData {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         String str = df.format(d);
         return str;
+    }
+
+    //不可包含非法字符，服务器要用
+    public static String checkStringOK(String str)
+    {
+        if(str.contains("#")||str.contains("%")||str.contains("*"))//||str.contains(" "))
+        {
+            return "不可包含#,%,*等特殊字符！";
+        }
+        return "";
     }
 }

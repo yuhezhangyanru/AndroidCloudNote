@@ -41,10 +41,10 @@ public class NoteListActivity extends AppCompatActivity implements AdapterView.O
             public void handleMessage(Message msg) {
                 String message = (String) msg.obj;//obj不一定是String类，可以是别的类，看用户具体的应用
                 //根据message中的信息对主线程的UI进行改动
-                LogTool.prnit("笔记列表页面，接收消息message=" + message);
+                LogTool.prnit(this,"笔记列表页面，接收消息message=" + message);
                 if(message.contains("跳转到删除")) {
                     int messageId = msg.arg1;
-                    LogTool.prnit("即将删除笔记ID="+messageId);
+                    LogTool.prnit(this,"即将删除笔记ID="+messageId);
                   //  noteItemView.setVisibility(View.INVISIBLE);
                     MySQLiteOpenHelper.getInstance().DeleteTable("note", "id" ,new String[]{messageId+""});
 
@@ -56,7 +56,7 @@ public class NoteListActivity extends AppCompatActivity implements AdapterView.O
                 {
                     //跳转到修改页面
                     int messageId = msg.arg1;
-                     LogTool.prnit("编辑的笔记ID="+messageId);
+                     LogTool.prnit(this,"编辑的笔记ID="+messageId);
                      SelectResInfo noteInfo = MySQLiteOpenHelper.getInstance().SelectTable("note","id="+messageId+"");
                      GlobalData.curNote =noteInfo.list.get(0);
 
@@ -69,6 +69,7 @@ public class NoteListActivity extends AppCompatActivity implements AdapterView.O
             }
         };
 
+        //处理笔记列表
         _lastClickView = null;
         dataList = new ArrayList<NoteItemInfo>();
 
@@ -83,6 +84,7 @@ public class NoteListActivity extends AppCompatActivity implements AdapterView.O
             nullInfo.content ="笔记为空！点击即新建";
             nullInfo.modify_time ="";
             nullInfo.docID =-1;
+            nullInfo.noteType = NoteItemInfo.NoteType.MyNote;
             dataList.add(nullInfo);
         }
         else{
@@ -96,7 +98,8 @@ public class NoteListActivity extends AppCompatActivity implements AdapterView.O
                 noteInfo.content = item.dic.get("content").toString();
                 noteInfo.modify_time = item.dic.get("modify_time").toString();
                 noteInfo.tag = item.dic.get("tag").toString();
-                LogTool.prnit("我的笔记列表index="+index+",info="+item.dic);
+                noteInfo.noteType = NoteItemInfo.NoteType.MyNote;
+               // LogTool.prnit("我的笔记列表index="+index+",info="+item.dic);
                 dataList.add(noteInfo);
             }
         }
@@ -112,9 +115,18 @@ public class NoteListActivity extends AppCompatActivity implements AdapterView.O
         btnCreate = (Button)findViewById(R.id.btnCreate);
         btnSetting = (Button)findViewById(R.id.btnSettinng);
         btnShare = (Button)findViewById(R.id.btnShare);
+        //阜南县笔记
+        btnShare.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                LogTool.prnit(this,"点击跳转到分享笔记页面！");
+              //  GlobalData.curNote = null;
+                Intent intent = new Intent(NoteListActivity.this, ShareNoteActivity.class);
+                startActivity(intent);
+            }});
+
         btnCreate.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                LogTool.prnit("点击了新建笔记！");
+                LogTool.prnit(this,"点击了新建笔记！");
                 GlobalData.curNote = null;
                 Intent intent = new Intent(NoteListActivity.this, WriteNoteActivity.class);
                 startActivity(intent);
@@ -122,19 +134,17 @@ public class NoteListActivity extends AppCompatActivity implements AdapterView.O
         });
         btnSetting.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                LogTool.prnit("点击了设置！lastClickId="+lastClickId);
+                LogTool.prnit(this,"点击了设置！lastClickId="+lastClickId);
                 Intent intent = new Intent(NoteListActivity.this, SettingActivity.class);
                 startActivity(intent);
             }
         });
-        btnShare.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                LogTool.prnit("点击了分享笔记！lastClickId="+lastClickId);
-                //TODO 群组分享页面
-            }
-        });
-
-
+      // yanruTODO屏蔽 btnShare.setOnClickListener(new View.OnClickListener() {
+       //     public void onClick(View v) {
+          //      LogTool.prnit("点击了分享笔记！lastClickId="+lastClickId);
+           //     //TODO 群组分享页面
+      //      }
+     // /  });
     }
 
     // 这是实现OnItemClickListener接口必须实现的方法，在这里进行item的点击事件的处理，最常用的是position，可以根据position获得点击的item的数据
@@ -143,7 +153,7 @@ public class NoteListActivity extends AppCompatActivity implements AdapterView.O
                             long id) {
        // Toast.makeText(NoteListActivity.this, "点击了第" + position + "条数据", 0).show();
         lastClickId = dataList.get(position).docID;
-        LogTool.prnit("点击的元素下标="+position+",数据的ID="+lastClickId);
+        LogTool.prnit(this,"点击的元素下标="+position+",数据的ID="+lastClickId);
         if(lastClickId <0)
         {
             //点击了空元素，去新建

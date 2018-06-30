@@ -39,6 +39,12 @@
             tools:layout_editor_absoluteX="43dp"
             tools:layout_editor_absoluteY="96dp" />
 
+        <TextView
+            android:id="@+id/txtTimeInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="时间信息" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -69,9 +75,9 @@
         <EditText
             android:id="@+id/editContent"
             android:layout_width="match_parent"
-            android:layout_height="381dp"
-            android:hint="请输入笔记内容"
+            android:layout_height="339dp"
             android:gravity="top"
+            android:hint="请输入笔记内容"
             android:typeface="normal"
             tools:layout_editor_absoluteX="43dp" />
 

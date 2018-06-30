@@ -60,6 +60,9 @@ public class Program
             }
         }
 
+        string serverInfo = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+        serverInfo = serverInfo.Substring(0, serverInfo.LastIndexOf(@"\")) + @"\";
+        serverInfo += "ServerInfo.txt";
     
         string debugPath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
         debugPath = debugPath.Substring(0, debugPath.LastIndexOf(@"\")) + @"\";
@@ -67,13 +70,32 @@ public class Program
 
         LogTool.debugPath = debugPath;
 
-        Console.WriteLine("*****最终服务器IP=" + serverAddress+"#");
+        Console.WriteLine("输出日志路径=" + LogTool.debugPath);
+        Console.WriteLine("(服务器或客户端)请输入你的身份：");
+        string line =  Console.ReadLine();
+        if (line.Contains("服务器"))
+        {
+            useServerMode = true;
+        }
+        else if(line.Contains("客户端"))
+        {
+            useServerMode = false;
+        }
+        Console.WriteLine("你是 " + (useServerMode ? "服务器!请输入你的IP：" : "客户端!请输入服务器的IP(有意义)："));
+        if (useServerMode == false)
+        {
+            string readIP = Console.ReadLine();
+            if (readIP != "")
+            {
+                serverAddress = readIP;
+            }
+        }
+
+        Console.WriteLine("*****最终服务器IP=" + serverAddress + "#");
         Console.WriteLine("*****最终端口号:" + portNumber + "#");
-        Console.WriteLine("*****是否服务器模式:" + useServerMode + "#");
+        // Console.WriteLine("*****是否服务器模式:" + useServerMode + "#");
         Console.WriteLine("*****是否输出日志:" + LogTool.writeLog + "#");
         Console.WriteLine("*****本客户端是否会发送数据:" + ClientSend + "#");
-
-        Console.WriteLine("输出日志路径=" + LogTool.debugPath);
         ////暂时有效！！
         if (useServerMode)
         {
@@ -88,8 +110,8 @@ public class Program
             string testTemp = testStr;
             System.Console.WriteLine("客户端启动！输入换行发送数据！");
 
-            if (ClientSend) //客户端模拟收发
-            {
+          //、  if (ClientSend) //客户端模拟收发
+          //  {
                 long interval = 0;
                 while (true)
                 {
@@ -110,10 +132,10 @@ public class Program
                         }
                     }
                 }
-            }
-            else
-            {
-            }
+         //   }
+          //  else
+         //   {
+          //  }
             
         }
 

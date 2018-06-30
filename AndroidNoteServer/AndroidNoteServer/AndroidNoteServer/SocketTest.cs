@@ -64,20 +64,26 @@ public class SocketTest
 
             string receiveData = Receive(acceptSocket, 5000); //5 seconds timeout.
 
-            Console.WriteLine("time=" + DateTime.Now.ToShortTimeString() + ",Receive：" + receiveData+"#");
+            Console.WriteLine("time=" + DateTime.Now.ToLongTimeString() +",s="+DateTime.Now.Second+ ",Receive：" + receiveData + "#");
             //ParseDatafromBytes(byteArray);
             // ParseDataAsStr(receiveData);
             //服务器转发出去
-            if (receiveData != "") //假如不是空数据，就转发
-            {
-                string resend = "server#" + receiveData;
+
+            string resend = receiveData;
+            //yanruTODO需要的日志：
+            //分组列表
+           // if (resend != "") //服务器纯转发，指令由客户端去定。
+         //   {
                 Console.WriteLine("服务器发送:" + resend);
-                LogTool.WriteLog(resend);
+                // LogTool.WriteServerLog(resend);
+            //    LogTool.WriteLog("服务器发送:" + resend);
                 acceptSocket.Send(encode.GetBytes(resend));//encode.GetBytes("ok"));
-            }
+          //  }
             DestroySocket(acceptSocket); //import
         }
     }
+
+    
 
     /// <summary>
     /// 发送数据.模拟第三方给我发数据

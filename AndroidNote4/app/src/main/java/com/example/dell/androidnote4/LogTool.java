@@ -13,8 +13,10 @@ public class LogTool {
         Log.w("Info",str);
     }
 
-    public static void prnit(String str)
+    public static void prnit(Object obj,String str)
     {
-        System.out.println("yanruTODOdate="+System.nanoTime()+":"+str);
+      //  System.out.println("yanruTODOdate="+System.nanoTime()+":"+str);
+      //可以打印   Log.e("异常","异常哈哈哈");
+        Log.e( obj.getClass().getName().toString(),System.nanoTime()+":"+str);
     }
 }
